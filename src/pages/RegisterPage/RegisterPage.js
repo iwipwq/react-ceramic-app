@@ -1,7 +1,9 @@
-import React, { useState} from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import Clayful from 'clayful/client-js'
 
 function RegisterPage() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("")
     const [password, setPassword] =useState("")
 
@@ -14,6 +16,33 @@ function RegisterPage() {
         setPassword(e.target.value);
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+
+        var Customer = Clayful.Customer;
+
+        var payload = {
+            // userId:   'user_id',
+            email:    email,
+            password: password,
+        };
+        console.log('payload', payload);
+
+        Customer.createMe(payload, function(err, result) {
+
+            if (err) {
+                // Error case
+                console.log(err.code);
+            }
+
+            // var data = result.data;
+
+            // console.log(data);
+
+            navigate("/login");
+        });
+    }
+
     return (
         <div className="auth-wrapper">
             <section>
@@ -24,7 +53,7 @@ function RegisterPage() {
                 <p className='gray'>하나의 ID로 모든 <span className='green'>아기사자</span> 서비스를 이용할 수 있어요!
                     <span className='line-wrap'>이미 계정을 갖고 계신가요? <Link to="login" style={{color : "#2C856A", textDecoration : "none" }}>로그인 하러가기</Link></span>
                 </p>
-                <form>
+                <form onSubmit={handleSubmit}>
                     
                     <label className="gray" for="email">
                         <input onChange={handleEmailChange} name="email" placeholder="ID를 입력해주세요" type="email" value={email} />
